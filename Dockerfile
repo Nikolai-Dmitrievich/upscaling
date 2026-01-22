@@ -7,8 +7,11 @@ RUN apt-get update && apt-get install -y \
     libgomp1 \
     libgl1-mesa-glx \
     && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-CMD sh -c "python celery_app.py & celery -A celery_app:celery_app worker --loglevel=info & tail -f /dev/null"
+RUN mkdir -p files
+EXPOSE 5000
+CMD ["python", "celery_app.py"]
