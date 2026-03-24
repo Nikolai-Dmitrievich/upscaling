@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Результат</title>
+</head>
+<body>
+    <h1>Результат</h1>
+
+    {% if task.state == 'PENDING' %}
+        <p>Задача ещё выполняется, подождите...</p>
+    {% elif task.state == 'FAILURE' %}
+        <p>Ошибка при обработке изображения.</p>
+    {% elif task.state == 'SUCCESS' %}
+        <img src="/upscale/{{ task_id }}" style="max-width: 100%;">
+
+        <br><br>
+        <a href="/upscale/{{ task_id }}" download="upscaled.png">
+            Скачать картинку
+        </a>
+    {% else %}
+        <p>Статус задачи: {{ task.state }}</p>
+    {% endif %}
+
+    <br><br>
+    <a href="/">← Вернуться на главную</a>
+</body>
+</html>
