@@ -1,0 +1,59 @@
+[project]
+name = "image-upscaler"
+version = "1.0.0"
+description = "Async image upscaling service: Flask + Celery + Redis + OpenCV/EDSR"
+requires-python = ">=3.11"
+
+dependencies = [
+    "Flask>=3.0.0",
+    "celery>=5.3.0",
+    "redis>=5.0.0",
+    "opencv-contrib-python-headless>=4.8.0",
+    "numpy>=1.24.0",
+    "python-magic>=0.4.27",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.1.0",
+    "mypy>=2.3.1",
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
+    "coverage>=7.0.0",
+]
+
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4", "SIM"]
+ignore = ["B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q --strict-markers"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["app/main.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["cv2.*", "cv2.dnn_superres", "celery", "celery.*", "magic.*"]
+ignore_missing_imports = true

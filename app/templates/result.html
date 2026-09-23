@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Result</title>
+    {% if task.state == 'PENDING' or task.state == 'STARTED' %}
+    <meta http-equiv="refresh" content="2">
+    {% endif %}
+</head>
+<body>
+    <h1>Processing Result</h1>
+
+    {% if task.state == 'PENDING' %}
+        <p>Task is queued. Please wait...</p>
+    {% elif task.state == 'STARTED' %}
+        <p>Processing in progress. This may take a moment...</p>
+    {% elif task.state == 'FAILURE' %}
+        <p>Error occurred while processing the image.</p>
+        <p><small>{{ task.info }}</small></p>
+    {% elif task.state == 'SUCCESS' %}
+        <img src="/upscale/{{ task_id }}" style="max-width: 100%; border: 1px solid #ccc;">
+
+        <br><br>
+        <a href="/upscale/{{ task_id }}" download>
+            Download upscaled image
+        </a>
+    {% else %}
+        <p>Task status: {{ task.state }}</p>
+    {% endif %}
+
+    <br><br>
+    <a href="/">← Back to main page</a>
+</body>
+</html>
