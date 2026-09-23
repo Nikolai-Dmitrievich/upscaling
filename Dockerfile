@@ -1,34 +1,52 @@
-FROM python:3.11.8-slim-bookworm AS builder
+FROM python:3.12-slim-bookworm AS builder
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
     libxcb1 \
     libgomp1 \
-    libgl1-mesa-glx \
+    libgl1 \
     libmagic1 \
     && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+
+RUN python -m venv /opt/venv
+
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY pyproject.toml .
+RUN pip install --no-cache-dir .
+
 COPY . .
 
-FROM python:3.11.8-slim-bookworm
+
+FROM python:3.12-slim-bookworm
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
     libxcb1 \
     libgomp1 \
-    libgl1-mesa-glx \
+    libgl1 \
     libmagic1 \
     && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
-COPY --from=builder /usr/local /usr/local
+
+COPY --from=builder /opt/venv /opt/venv
+
 COPY --from=builder /app /app
-RUN mkdir -p files && \
-    useradd -m -u 1000 app && \
-    chown -R app:app /app /usr/local
+
+ENV PATH="/opt/venv/bin:$PATH"
+
+RUN useradd -m -u 1000 app && \
+    chown -R app:app /app /opt/venv
+
 USER app
 
-CMD ["python", "/app/app.py"]
+EXPOSE 5001
+
+CMD ["python", "-m", "app.main"]

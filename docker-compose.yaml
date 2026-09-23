@@ -2,31 +2,53 @@ version: '3.8'
 services:
   redis:
     image: redis:alpine
-    ports: ['6579:6379']
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   web:
     build: .
-    ports: 
-      - '5002:5001'
+    ports:
+      - "5002:5001"
+    env_file:
+      - .env
     environment:
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL:-redis://redis:6379/0}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND:-redis://redis:6379/1}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    volumes:
+      - ./models:/app/models:ro
     depends_on:
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5001/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
 
-  celery:
+  worker:
     build: .
-    command: celery -A tasks worker --loglevel=info
+    command: celery -A app.tasks.celery_app worker --loglevel=info
+    env_file:
+      - .env
     environment:
-      - CELERY_BROKER_URL=${CELERY_BROKER_URL:-redis://redis:6379/0}
-      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND:-redis://redis:6379/1}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    volumes:
+      - ./models:/app/models:ro
     depends_on:
       redis:
         condition: service_healthy
+    restart: unless-stopped
 
+volumes:
+  redis_data:

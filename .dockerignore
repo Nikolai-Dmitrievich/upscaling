@@ -24,9 +24,32 @@ docker-compose.yaml
 # Environment
 .env
 .env.*
-!.env.example
 
 # Misc
 *.log
 *.md
-!README.md
+
+# Testing & Linting
+tests/
+test_*.py
+pytest.ini
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Data & Models
+models/
+*.pb
+*.h5
+*.onnx
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
