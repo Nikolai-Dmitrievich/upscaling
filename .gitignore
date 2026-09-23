@@ -11,9 +11,14 @@ env/
 *.egg-info/
 dist/
 build/
+*.whl
+
+# Testing & Linting
 .pytest_cache/
 .coverage
 htmlcov/
+.mypy_cache/
+.ruff_cache/
 
 # IDE
 .idea/
@@ -28,11 +33,11 @@ htmlcov/
 .env
 !.env.example
 
-# Docker
-.docker/
+# Build artifacts
+*.egg-info/
+dist/
+build/
 
-# Misc
-*.log
-*.md
-!README.md
-
+# OS files
+.DS_Store
+Thumbs.db
