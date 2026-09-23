@@ -1,7 +1,6 @@
 # Image Upscaler
 
 [![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Code Style: Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 [![Type Checking: MyPy](https://img.shields.io/badge/types-mypy-000000.svg)](https://mypy.readthedocs.io/)
 
@@ -146,4 +145,3 @@ upscaling/
 - **Supported Formats**: JPG, PNG, GIF, WEBP
 - **Upscaling Factor**: 2x (fixed)
 - **Output Format**: Always returned as optimized PNG (Compression level 1)
-```
